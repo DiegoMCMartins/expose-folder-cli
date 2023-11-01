@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "expose_folder": "index.js"
+    "expose-folder": "index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

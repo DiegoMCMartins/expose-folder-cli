@@ -25,15 +25,6 @@ async function initCLI() {
     process.exit();
   }
 
-  const files = await fs.readdir(folder);
-
-  const html = new HTMLBuilder();
-  html.addTitle(`Pasta ${folder}`);
-
-  for(const file of files) {
-    html.addFileLink(file, path.join('/', folder, file));
-  }
-
   const networkInterfaces = Object.values(os.networkInterfaces());
 
   const hostnames = networkInterfaces.map(([ipv6, ipv4]) => ipv4?.address);
@@ -41,6 +32,8 @@ async function initCLI() {
   const server = createServer(5145, hostnames);
 
   server.on('request', async (request, response) => {
+    const files = await fs.readdir(folder);
+
     const url = new URL(request.url, `http://${request.headers.host}`);
 
     if(files.find(file => url.pathname?.includes(file))) {
@@ -54,6 +47,13 @@ async function initCLI() {
 
       readableStream.pipe(response);
       return;
+    }
+
+    const html = new HTMLBuilder();
+    html.addTitle(`Pasta ${folder}`);
+
+    for(const file of files) {
+      html.addFileLink(file, path.join('/', folder, file));
     }
 
     response.writeHead(200);
